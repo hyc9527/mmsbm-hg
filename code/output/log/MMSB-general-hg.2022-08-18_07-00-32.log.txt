@@ -1,0 +1,1 @@
+2022-08-18 07:00:32 WARNING:MMSB-general-hg:max_iter=10 reached: alpha estimation in M-step might not be optimal.

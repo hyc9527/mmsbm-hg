@@ -1,0 +1,5 @@
+matplotlib
+netowrkx
+numpy
+palettable
+pandas
