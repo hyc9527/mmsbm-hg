@@ -26,15 +26,17 @@ Experiments are documented in `main*.py` and `demo*.ipynb` files in folder `/cod
 
 - Experiment $1$: identifiability of mmsbm models.
 
-We simulate two types of hypergraphs and run two VEMs on these simulated data respectively. ELBOs are reported. One may refer to the notebook `demo_diagonal_vs_singleton.ipynb`.
+    We simulate two types of hypergraphs and run two VEMs on these simulated data respectively. ELBOs are reported. One may refer to the notebook `demo_diagonal_vs_singleton.ipynb`.
 
 
 - Experiment $2$: online VEM vs full batch VEM.
-Two VEMs, online and full batch are compared against each other in varisous set-ups. See the file `demo_onlin_vem.ipynb`.
+
+    Two VEMs, online and full batch are compared against each other in varisous set-ups. See the file `demo_onlin_vem.ipynb`.
 
 
 - Experiment $3$: analytics on real data 'Workplace'
-We run rugular VEM on the general hypergraph data 'Workplace'.Report posterior membership against true labels. Visualization modules are adapted from the paper Contisciani etc, 2022.
+
+    We run rugular VEM on the general hypergraph data 'Workplace'.Report posterior membership against true labels. Visualization modules are adapted from the paper Contisciani etc, 2022.
 
 
 
