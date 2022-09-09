@@ -1,0 +1,6 @@
+2022-09-09 15:00:43 INFO:MMSB-sgdg:========== TRAINING STARTS ==========
+2022-09-09 15:00:43 INFO:MMSB-sgdg: ========== TRAINING FINISHED ==========
+2022-09-09 15:00:44 INFO:MMSB-sgdg:========== TRAINING STARTS ==========
+2022-09-09 15:00:44 INFO:MMSB-sgdg: ========== TRAINING FINISHED ==========
+2022-09-09 15:00:45 INFO:MMSB-sgdg:========== TRAINING STARTS ==========
+2022-09-09 15:00:45 INFO:MMSB-sgdg: ========== TRAINING FINISHED ==========

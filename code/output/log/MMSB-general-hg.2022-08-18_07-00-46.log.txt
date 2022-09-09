@@ -1,0 +1,5 @@
+2022-08-18 07:00:48 WARNING:MMSB-general-hg:max_iter=10 reached: alpha estimation in M-step might not be optimal.
+2022-08-18 07:00:52 WARNING:MMSB-general-hg:max_iter reached: VEM is not converging.
+2022-08-18 07:00:52 INFO:MMSB-general-hg: ========== TRAINING FINISHED ==========
+2022-08-18 07:00:52 INFO:MMSB-general-hg:vem output is  saved in the file: ./output/test_res_workplace.npz
+2022-08-18 07:00:52 INFO:MMSB-general-hg:To load output file: res=np.load(filename); check out what are in res: [var for var in res.files];for instance: res["elbo"];

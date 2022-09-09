@@ -1,0 +1,2 @@
+2022-09-09 14:31:42 INFO:MMSB-sgdg:========== TRAINING STARTS ==========
+2022-09-09 14:31:42 INFO:MMSB-sgdg: ========== TRAINING FINISHED ==========

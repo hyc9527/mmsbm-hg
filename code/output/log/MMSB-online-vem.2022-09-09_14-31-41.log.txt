@@ -1,0 +1,3 @@
+2022-09-09 14:31:42 INFO:MMSB-online-vem:========== TRAINING STARTS ==========
+2022-09-09 14:31:42 WARNING:MMSB-online-vem:max_iter reached: VEM is not converging.
+2022-09-09 14:31:42 INFO:MMSB-online-vem: ========== TRAINING FINISHED ==========

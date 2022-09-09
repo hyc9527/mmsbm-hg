@@ -1,0 +1,9 @@
+2022-09-08 16:03:36 INFO:MMSB-online-vem:========== TRAINING STARTS ==========
+2022-09-08 16:03:36 WARNING:MMSB-online-vem:max_iter reached: VEM is not converging.
+2022-09-08 16:03:36 INFO:MMSB-online-vem: ========== TRAINING FINISHED ==========
+2022-09-08 16:03:36 INFO:MMSB-online-vem:========== TRAINING STARTS ==========
+2022-09-08 16:03:36 WARNING:MMSB-online-vem:max_iter reached: VEM is not converging.
+2022-09-08 16:03:36 INFO:MMSB-online-vem: ========== TRAINING FINISHED ==========
+2022-09-08 16:03:36 INFO:MMSB-online-vem:========== TRAINING STARTS ==========
+2022-09-08 16:03:38 WARNING:MMSB-online-vem:max_iter reached: VEM is not converging.
+2022-09-08 16:03:38 INFO:MMSB-online-vem: ========== TRAINING FINISHED ==========

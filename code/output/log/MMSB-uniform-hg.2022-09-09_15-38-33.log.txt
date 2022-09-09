@@ -1,0 +1,9 @@
+2022-09-09 15:38:34 INFO:MMSB-uniform-hg:========== TRAINING STARTS ==========
+2022-09-09 15:38:34 INFO:MMSB-uniform-hg:Epoch 0: estep elbo = -36.39388769604254 ; mstep elbo = -36.39388769604254
+2022-09-09 15:38:34 INFO:MMSB-uniform-hg: ========== TRAINING FINISHED ==========
+2022-09-09 15:38:35 INFO:MMSB-uniform-hg:========== TRAINING STARTS ==========
+2022-09-09 15:38:35 INFO:MMSB-uniform-hg:Epoch 0: estep elbo = -23.23069832017439 ; mstep elbo = -23.23069832017439
+2022-09-09 15:38:35 INFO:MMSB-uniform-hg: ========== TRAINING FINISHED ==========
+2022-09-09 15:38:36 INFO:MMSB-uniform-hg:========== TRAINING STARTS ==========
+2022-09-09 15:38:36 INFO:MMSB-uniform-hg:Epoch 0: estep elbo = -49.3004273141729 ; mstep elbo = -49.3004273141729
+2022-09-09 15:38:36 INFO:MMSB-uniform-hg: ========== TRAINING FINISHED ==========

@@ -1,0 +1,6 @@
+2022-09-09 15:35:36 INFO:MMSB-uniform-hg:========== TRAINING STARTS ==========
+2022-09-09 15:35:36 INFO:MMSB-uniform-hg: ========== TRAINING FINISHED ==========
+2022-09-09 15:35:37 INFO:MMSB-uniform-hg:========== TRAINING STARTS ==========
+2022-09-09 15:35:37 INFO:MMSB-uniform-hg: ========== TRAINING FINISHED ==========
+2022-09-09 15:35:38 INFO:MMSB-uniform-hg:========== TRAINING STARTS ==========
+2022-09-09 15:35:38 INFO:MMSB-uniform-hg: ========== TRAINING FINISHED ==========

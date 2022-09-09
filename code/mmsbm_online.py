@@ -4,7 +4,7 @@
 import numpy as np
 from scipy.special import psi, polygamma, loggamma, binom
 import itertools
-import utils_mmsbm_online
+import utils_mmsbm_uniform
 from formatted_logger import formatted_logger
 
 #import warnings
@@ -95,7 +95,7 @@ class MMSB_hg_online(object):
         """
            Online variational EM for  uniform mmsbm model
         """
-        self.B = utils_mmsbm_online.gen_singleton_B(self.b0, self.b1, self.H, self.K) # generate B for a singleton model.
+        self.B = utils_mmsbm_uniform.gen_singleton_B(self.b0, self.b1, self.H, self.K) # generate B for a singleton model.
         estep_elbo = self.calc_elbo()
         mstep_elbo = np.copy(estep_elbo)
         res_elbo = estep_elbo
@@ -311,7 +311,7 @@ class MMSB_hg_online(object):
         if dem_0 > 1e-250 and dem_1 > 1e-250: # DEBUG
             b0 = num_0/(dem_0*(1-self.rho)) # connecting prob that node p,q,r in the same cluster
             b1 = num_1/(dem_1*(1-self.rho)) # connecting prob that p,q r not in same cluster
-            self.B = utils_mmsbm_online.gen_singleton_B(b0,b1,self.H, self.K)
+            self.B = utils_mmsbm_uniform.gen_singleton_B(b0,b1,self.H, self.K)
         else:
             log.info(f'B is not updated since dem0 is {dem_0} and dem1 is {dem_1}')
 
@@ -428,7 +428,7 @@ class MMSB_hg_online(object):
 
 if __name__ == "__main__":
     num_node = 10
-    hg_adj = utils_mmsbm_online.gen_singleton_hg(num_node)
+    hg_adj = utils_mmsbm_uniform.gen_singleton_hg(num_node)
     num_clust = 2
     model = MMSB_hg_online(hg_adj, num_clust)
     res = model.run_vem()

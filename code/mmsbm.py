@@ -1,9 +1,8 @@
 # pyright:  reportGeneralTypeIssues=false, reportUnboundedVariable=false
-
+import utils_mmsbm_uniform
 import numpy as np
 from scipy.special import psi, polygamma, loggamma, binom
 import itertools
-import utils_mmsbm
 from formatted_logger import formatted_logger
 #import warnings
 #import seaborn as sns
@@ -11,7 +10,7 @@ from formatted_logger import formatted_logger
 #from sklearn.model_selection import train_test_split
 
 
-log = formatted_logger('MMSB-sgdg', 'info')
+log = formatted_logger('MMSB-uniform-hg', 'info')
 
 
 class MMSB_hg(object):
@@ -49,12 +48,17 @@ class MMSB_hg(object):
         else:
             self.K = 3
             log.info('defualt K = 3, since K is not specified')
-        #self.random_state=123
+        self.random_state=123
         self.max_iter_vem = 20
-        #self.max_iter_phi = 10
         self.max_iter_alpha = 1
         assert self.H > 1 # length of hyperedge range is  [2,3,..., infty)
-
+        self.random_state=123
+        self.max_iter_alpha = 1
+        self.max_iter_vem = 5
+        self.max_iter_phi =  5
+        self.elbo_conv_tol = 1e-6
+        self.tol_phi  = 1e-30
+        self.elbo_conv_tol = 1e-30
 
         """ Initial values for model parameters: randomized or fixed
             isRandomStart = True:
@@ -64,37 +68,32 @@ class MMSB_hg(object):
                 phi[p:] is dist as dirichlet(alpha)
                 gamma[p,k] = 1/K
         """
+        self.alpha = np.ones(self.K)*alpha0
+        self.rho = 0
+        self.phi = np.array([np.random.dirichlet(self.alpha, size=(self.N)) for _ in range(1)])
+        self.gamma =  np.ones((self.N, self.K))/self.K
         if isRandomStart:
-            self.alpha = np.ones(self.K)*alpha0
-            #self.alpha = np.random.rand(self.K)
             self.b0 = np.random.uniform(0.7,1-1e-4,1) # true connecting prob of two nodes in same cluster
             self.b1 = np.random.uniform(1e-4,0.1,1) # ture connecting prob otherwise
-            self.rho = 0
-            self.phi = np.array([np.random.dirichlet(self.alpha, size=(self.N)) for _ in range(1)])
-            self.gamma =  np.ones((self.N, self.K))/self.K
         else:
-            self.alpha = np.ones(self.K)*alpha0
             self.b0 = 0.9 # true connecting prob of two nodes in same cluster
             self.b1 = 0.1 # ture connecting prob otherwise
-            self.rho = 0
-            self.phi =  np.array([np.ones(self.alpha, size=(self.N)) for _ in range(1)])
-            self.gamma =  np.ones((self.N, self.K))/self.K
-        print(f' Init values for alpha are {self.alpha}')
-        print(f' Init values for b0 b1 are {self.b0, self.b1}')
-        print(f'Init values for phi are {self.phi}')
-        print(f'Init values for gamma are {self.gamma}')
+        #print(f' Init values for alpha are {self.alpha}')
+        #print(f' Init values for b0 b1 are {self.b0, self.b1}')
+        #print(f'Init values for phi are {self.phi}')
+        #print(f'Init values for gamma are {self.gamma}')
 
 
-
+    '''
     def run_vem(self, tol=1e-6, IsDiagonalOptB=False,verbose= False):
         """
             Variational EM for  uniform mmsbm model
         """
 
         if not IsDiagonalOptB:
-            self.B = utils_mmsbm.gen_singleton_B(self.b0, self.b1, self.H, self.K) # generate B for a base model.
+            self.B = utils_mmsbm_uniform.gen_singleton_B(self.b0, self.b1, self.H, self.K) # generate B for a base model.
         else:
-            self.B = utils_mmsbm.gen_diagonal_B([self.b0]*self.K, self.b1, self.H, self.K) # generate B for a base model.
+            self.B = utils_mmsbm_uniform.gen_diagonal_B([self.b0]*self.K, self.b1, self.H, self.K) # generate B for a base model.
         elbo = -np.inf
         res_elbo = elbo
         res_elbo_emstep = elbo
@@ -126,8 +125,47 @@ class MMSB_hg(object):
         else:
             log.warn(f"max_iter reached: VEM is not converging.")
         log.info(" ========== TRAINING FINISHED ==========")
+        return {"alpha": self.alpha, "B":self.B, "phi":self.phi, "gamma":self.gamma, "elbo": res_elbo}
+        #return {"alpha": self.alpha, "B":self.B, "phi":self.phi, "gamma":self.gamma, "elbo_e_m":res_elbo_emstep}
+    '''
+    def run_vem(self, tol=1e-6, IsDiagonalOptB=False,verbose= True):
+        """
+            Variational EM for  uniform mmsbm model
+        """
+        if not IsDiagonalOptB:
+            self.B = utils_mmsbm_uniform.gen_singleton_B(self.b0, self.b1, self.H, self.K) # generate B for a base model.
+        else:
+            self.B = utils_mmsbm_uniform.gen_diagonal_B([self.b0]*self.K, self.b1, self.H, self.K) # generate B for a base model.
+        estep_elbo = self.calc_elbo()
+        mstep_elbo = np.copy(estep_elbo)
+        res_elbo = estep_elbo
+        res_elbo = estep_elbo
+        log.info('========== TRAINING STARTS ==========')
+        for epoch in range(self.max_iter_vem):
+            old_elbo = mstep_elbo
+            self.run_e_step() # E step
+            estep_elbo = self.calc_elbo()
+            res_elbo_emstep = np.append(res_elbo, estep_elbo)
+            estep_elbo = self.calc_elbo()
+            if abs(estep_elbo - old_elbo)< self.elbo_conv_tol:
+                break
+            else:
+                res_elbo = np.append(res_elbo, estep_elbo)
+            self.run_m_step(IsDiagonalOptB) # M step
+            mstep_elbo = self.calc_elbo()
+            res_elbo = np.append(res_elbo, mstep_elbo)
+            if verbose:
+                log.info(f'Epoch {epoch}: estep elbo = {estep_elbo} ; mstep elbo = {mstep_elbo}')
+            err = abs(mstep_elbo - estep_elbo)
+            if err < tol:
+                break
+            else:
+                res_elbo = np.append(res_elbo,mstep_elbo)
+        else:
+            log.warn(f"max_iter reached: VEM is not converging.")
+        log.info(" ========== TRAINING FINISHED ==========")
         #return {"alpha": self.alpha, "B":self.B, "phi":self.phi, "gamma":self.gamma, "elbo": res_elbo}
-        return {"alpha": self.alpha, "B":self.B, "phi":self.phi, "gamma":self.gamma, "elbo_e_m":res_elbo_emstep}
+        return {"alpha": self.alpha, "B":self.B, "phi":self.phi, "gamma":self.gamma, "elbo":res_elbo}
 
 
     def run_e_step(self, estep_verbose=False):
@@ -282,11 +320,11 @@ class MMSB_hg(object):
         if dem_0 > 0 and dem_1 > 0:
             b0 = num_0/(dem_0*(1-self.rho)) # connecting prob that node p,q,r in the same cluster
             b1 = num_1/(dem_1*(1-self.rho)) # connecting prob that p,q r not in same cluster
-            self.B = utils_mmsbm.gen_singleton_B(b0,b1,self.H, self.K)
+            self.B = utils_mmsbm_uniform.gen_singleton_B(b0,b1,self.H, self.K)
         #if dem_0 > 1e-250 and dem_1 > 1e-250: # DEBUG
         #    b0 = num_0/(dem_0*(1-self.rho)) # connecting prob that node p,q,r in the same cluster
         #    b1 = num_1/(dem_1*(1-self.rho)) # connecting prob that p,q r not in same cluster
-        #    self.B = utils_mmsbm.gen_singleton_B(b0,b1,self.H, self.K)
+        #    self.B = utils_mmsbm_uniform.gen_singleton_B(b0,b1,self.H, self.K)
         #else:
         #    log.info(f'B is not updated since dem0 is {dem_0} and dem1 is {dem_1}')
 
@@ -329,11 +367,11 @@ class MMSB_hg(object):
             b1 = num_1/(dem_1*(1-self.rho)) # connecting prob that p,q r not in same cluster
         else:
             b1 = 0.0
-        self.B = utils_mmsbm.gen_diagonal_B(b0_diag,b1,self.H, self.K)
+        self.B = utils_mmsbm_uniform.gen_diagonal_B(b0_diag,b1,self.H, self.K)
         #if dem_0 > 1e-250 and dem_1 > 1e-250: # DEBUG
         #    b0 = num_0/(dem_0*(1-self.rho)) # connecting prob that node p,q,r in the same cluster
         #    b1 = num_1/(dem_1*(1-self.rho)) # connecting prob that p,q r not in same cluster
-        #    self.B = utils_mmsbm.gen_singleton_B(b0,b1,self.H, self.K)
+        #    self.B = utils_mmsbm_uniform.gen_singleton_B(b0,b1,self.H, self.K)
         #else:
         #    log.info(f'B is not updated since dem0 is {dem_0} and dem1 is {dem_1}')
 
@@ -453,7 +491,7 @@ if __name__ == "__main__":
     num_node = 10
     num_clust = 3
     h0=3
-    hg_adj = utils_mmsbm.gen_diagonal_hg(num_node,h0)
+    hg_adj = utils_mmsbm_uniform.gen_diagonal_hg(num_node,h0)
     model = MMSB_hg(hg_adj, h0, num_clust)
     res = model.run_vem()
 
